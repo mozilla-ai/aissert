@@ -14,7 +14,7 @@ People spoke in various languages including English, Spanish, and French, reflec
 This dynamic environment not only provided a scenic escape from the bustle of city life but also served as a microcosm of the city's rich cultural tapestry.
 ```
 
-The idea behind this project is to give an example of what AIssert could be, a way of testing LLMs integreations with product apps.
+The idea behind this project is to give an example of what AIssert could be, a way of testing LLMs integrations with product apps.
 
 
 ## Installation
@@ -32,10 +32,11 @@ pip install -r requirements.txt
 python backend/main.py 
 ```
 
-Open the file [index.html](frontend/index.html) in your browser and then ou can ask the chatbot anything about the context.
+Open the file [index.html](frontend/index.html) in your browser and then you can ask the chatbot anything about the context.
 
 
-Running tests (the interesting part about AIssert)
+## To the important bit, using Aissert
+Running tests
 ```
 python -m backend/test_llm
 ```
