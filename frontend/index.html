@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot</title>
+  <!-- Import VueJS (using Vue 3 from a CDN) -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .chat-container { max-width: 600px; margin: auto; }
+    .message { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+    .user { background-color: #e1ffc7; }
+    .bot { background-color: #f0f0f0; }
+    input { padding: 10px; font-size: 1rem; }
+    button { padding: 10px; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <div id="app" class="chat-container">
+    <div v-for="(msg, index) in messages" :key="index" class="message" :class="msg.sender">
+      <strong>{{ msg.sender === 'user' ? 'You' : 'Bot' }}:</strong> {{ msg.text }}
+    </div>
+    <div>
+      <input v-model="userInput" @keyup.enter="sendMessage" placeholder="Type your message here..." style="width: 80%;" />
+      <button @click="sendMessage">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          userInput: '',
+          messages: []
+        }
+      },
+      methods: {
+        async sendMessage() {
+          const text = this.userInput.trim();
+          if (!text) return;
+
+          // Append user's message to the conversation.
+          this.messages.push({ sender: 'user', text: text });
+          this.userInput = '';
+
+          // Call the backend API.
+          try {
+            const res = await fetch('http://localhost:8000/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: text })
+            });
+            const data = await res.json();
+            this.messages.push({ sender: 'bot', text: data.response });
+          } catch (err) {
+            console.error(err);
+            this.messages.push({ sender: 'bot', text: 'Error: Could not connect to the server.' });
+          }
+        }
+      }
+    });
+    app.mount('#app');
+  </script>
+</body>
+</html>
