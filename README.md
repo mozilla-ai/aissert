@@ -42,7 +42,17 @@ python -m backend/test_llm
 ```
 
 One of the AIssert tests we have will fail, as we are checking whether the prompt language and output language match (And this won't be true for anything that's not english)
+```
+======================================================================
+FAIL: test_language_match_spanish (backend.test_llm.TestLLMQuery.test_language_match_spanish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/agonzalez/repos/aissert/example_app/backend/test_llm.py", line 31, in test_language_match_spanish
+    self.assertTrue(result["passed"], msg=result["message"])
+AssertionError: False is not true : Language mismatch: question is 'es', answer is 'en'.
 
+----------------------------------------------------------------------
+```
 
 
 There are different ways of fixing this test (maybe using a model that would do that automatically, injecting instructions in the prompt, etc.)
