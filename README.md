@@ -41,7 +41,7 @@ Running tests
 python -m backend/test_llm
 ```
 
-One of the AIssert tests we have will fail, as we are checking whether the prompt language and output language match (And this won't be true for anything that's not english)
+One of the AIssert [tests](https://github.com/mozilla-ai/aissert/blob/main/backend/test_llm.py#L23) we have will fail, as we are checking whether the prompt language and output language match (And this won't be true for anything that's not english)
 ```
 ======================================================================
 FAIL: test_language_match_spanish (backend.test_llm.TestLLMQuery.test_language_match_spanish)
