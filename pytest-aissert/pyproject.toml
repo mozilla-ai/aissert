@@ -1,0 +1,45 @@
+[build-system]
+requires = [
+  "setuptools>=61.0.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pytest-aissert"
+version = "0.1.0"
+description = "Library for metrics and tests on NLP sets"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pytest>=8.3.0",
+    "decorator==5.2.1"
+]
+authors = [
+    { name = "Javier Torres", email = "javier@mozilla.ai" },
+]
+maintainers = [
+    { name = "Javier Torres", email = "javier@mozilla.ai" },
+]
+license = {file = "LICENSE"}
+classifiers = [
+    "Framework :: Pytest",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Testing",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+]
+[project.urls]
+Repository = "https://github.com/mozilla-ai/aissert"
+[project.entry-points.pytest11]
+aissert = "pytest_aissert.plugin"
+

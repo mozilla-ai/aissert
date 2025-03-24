@@ -44,6 +44,9 @@ dependencies = [
     "langid",
 ]
 
+[project.scripts]
+example = "cli:main_cli"
+
 [dependency-groups]
 dev = [
     "pytest>=8.3.3",

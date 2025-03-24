@@ -1,6 +1,21 @@
 import pytest
 import yaml
-import decorators
+import pytest_aissert.decorators as decorators
+
+
+def pytest_addoption(parser):
+    group = parser.getgroup('aissert-pytest')
+    group.addoption(
+        '--foo',
+        action='store',
+        dest='dest_foo',
+        default='2025',
+        help='Set the value for the fixture "bar".'
+    )
+    print("<<called addoption>>")
+    parser.addini('HELLO', 'Dummy pytest.ini setting')
+
+
 
 def pytest_generate_tests(metafunc):
     """ This allows us to load tests from external files by
@@ -23,6 +38,8 @@ def pytest_generate_tests(metafunc):
 
 def pytest_sessionfinish(session, exitstatus):
     print(f'<<< {decorators.current_report} >>>')
+
+
 
 """
 @pytest.hookimpl(wrapper=True)

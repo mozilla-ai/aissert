@@ -1,0 +1,10 @@
+site_name: pytest-aissert-pytest
+site_description: Use aissert tests within pytest
+site_author: Javier Torres
+
+theme: readthedocs
+
+repo_url: https://github.com/javiermtorres/pytest-aissert-pytest
+
+pages:
+- Home: index.md

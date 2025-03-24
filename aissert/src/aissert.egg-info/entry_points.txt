@@ -1,0 +1,2 @@
+[console_scripts]
+example = cli:main_cli

@@ -1,5 +1,5 @@
 import click
-from metrics.base_lib import some_metric
+from aissert.src.metrics.base import some_metric
 import sys
 
 @click.command()

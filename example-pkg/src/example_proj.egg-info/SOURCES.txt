@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+src/example_pkg/generators.py
+src/example_pkg/main.py
+src/example_proj.egg-info/PKG-INFO
+src/example_proj.egg-info/SOURCES.txt
+src/example_proj.egg-info/dependency_links.txt
+src/example_proj.egg-info/entry_points.txt
+src/example_proj.egg-info/requires.txt
+src/example_proj.egg-info/top_level.txt
+tests/test_pytest_compatible.py
