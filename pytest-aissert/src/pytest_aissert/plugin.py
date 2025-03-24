@@ -18,7 +18,6 @@ def pytest_addoption(parser):
     parser.addini('HELLO', 'Dummy pytest.ini setting')
 
 
-
 def pytest_generate_tests(metafunc):
     """ This allows us to load tests from external files by
     parametrizing tests with each test case found in a data_X
@@ -37,6 +36,7 @@ def pytest_generate_tests(metafunc):
             ],
             scope="session"
         )
+
 
 def pytest_sessionfinish(session, exitstatus):
     print(f'<<< {decorators.current_report} >>>')
