@@ -4,6 +4,7 @@ import pytest_aissert.decorators as decorators
 
 
 def pytest_addoption(parser):
+    """
     group = parser.getgroup('aissert-pytest')
     group.addoption(
         '--foo',
@@ -12,6 +13,7 @@ def pytest_addoption(parser):
         default='2025',
         help='Set the value for the fixture "bar".'
     )
+    """
     print("<<called addoption>>")
     parser.addini('HELLO', 'Dummy pytest.ini setting')
 

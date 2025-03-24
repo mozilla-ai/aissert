@@ -187,6 +187,7 @@ dependencies = [
     { name = "aissert" },
     { name = "litellm" },
     { name = "pytest-aissert" },
+    { name = "pytest-aissert3" },
 ]
 
 [package.metadata]
@@ -194,6 +195,7 @@ requires-dist = [
     { name = "aissert", editable = "../aissert" },
     { name = "litellm", specifier = "==1.63.14" },
     { name = "pytest-aissert", editable = "../pytest-aissert" },
+    { name = "pytest-aissert3", editable = "../pytest-aissert3" },
 ]
 
 [[package]]
@@ -657,6 +659,17 @@ requires-dist = [
     { name = "decorator", specifier = "==5.2.1" },
     { name = "pytest", specifier = ">=8.3.0" },
 ]
+
+[[package]]
+name = "pytest-aissert3"
+version = "0.1.0"
+source = { editable = "../pytest-aissert3" }
+dependencies = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pytest", specifier = ">=8.3.0" }]
 
 [[package]]
 name = "python-dotenv"

@@ -1,5 +1,5 @@
 from pytest_aissert.decorators import ai_metric
-from aissert.test_lib.base import question_language_equals_answer_language_metric, some_metric
+from aissert_lib.base import question_language_equals_answer_language_metric, some_metric
 
 @ai_metric(name="language_test")
 def test_question_language_equals_answer_language(question_yaml, answer_yaml):
