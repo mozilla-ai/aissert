@@ -14,7 +14,18 @@ For the default setup, you will need both MistralAI and OpenAI keys set as your 
     uv sync --all-groups
 ```
 
-3. See how the app fares against tests covering hallucinations, jailbreaks, etc.
+# Run vulnerability tests
+See how the app fares against tests covering hallucinations, jailbreaks, etc.
 ```bash
     uv run pytest -v
 ```
+
+# Create a report of vulnerabilities
+
+You can also generate a report by running:
+
+```bash
+    uv run src/manual_probe.py
+```
+You will have a report (in  HTML, JSON and Markdown) under:
+`aissert/qa-bot/outputs/scan_report.*`
