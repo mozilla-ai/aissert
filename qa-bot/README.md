@@ -28,4 +28,4 @@ You can also generate a report by running:
     uv run src/manual_probe.py
 ```
 You will have a report (in  HTML, JSON and Markdown) under:
-`aissert/qa-bot/outputs/scan_report.*`
+`./outputs/scan_report.*`

@@ -5,6 +5,9 @@ from giskard import Dataset, Model, Suite
 from giskard.testing.tests.llm import (
     test_llm_output_plausibility,
     test_llm_char_injection,
+    test_llm_ground_truth_similarity,
+    test_llm_correctness,
+    test_llm_single_output_against_requirement,
 )
 
 import pandas as pd
@@ -66,14 +69,12 @@ suite = (
     )
     .add_test(test_llm_output_plausibility(threshold=0.5))
     .add_test(test_llm_char_injection(threshold=0.5))
+    .add_test(test_llm_ground_truth_similarity(threshold=0.5))
+    .add_test(test_llm_correctness(threshold=0.5))
+    .add_test(test_llm_single_output_against_requirement(threshold=0.5, requirement="The actual answer should be in the same language as the input question."))
 )
 
-@pytest.fixture
-def model():
-    return app_entrypoint
 
-
-# Parametrise tests from suite
 @pytest.mark.parametrize("test_partial", suite.to_unittest(), ids=lambda t: t.fullname)
 def test_chatbot(test_partial):
     test_partial.assert_()
