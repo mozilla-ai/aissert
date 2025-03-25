@@ -1,4 +1,18 @@
 # Install Instructions
 
-1. Create a venv environment using Python 3.11 (faiss version 1.7.4 required by giskard is only available in 3.11)
-1. Install giskard via `pip install giskard[llm] -U` (see https://docs.giskard.ai/en/stable/open_source/installation_library/index.html)
+
+1. Install uv 
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
+
+2. Install Python with uv and a virtual environment with all dependencies
+```bash
+    uv python install 3.11.11
+    uv sync --all-groups
+```
+
+3. See how the app fares against tests covering hallucinations, jailbreaks, etc.
+```bash
+    uv run pytest -v
+```
