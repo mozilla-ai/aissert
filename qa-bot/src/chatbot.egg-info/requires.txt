@@ -1,0 +1,5 @@
+loguru
+langchain
+langchain-mistralai
+langchain-community
+pypdf
