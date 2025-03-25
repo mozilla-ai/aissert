@@ -1,11 +1,11 @@
 from pathlib import Path
 
-OUTPUT_FOLDER = Path(__file__).parent.parent.parent / "outputs"
+OUTPUT_FOLDER = Path(__file__).parent.parent / "outputs"
 SAMPLE_VECTORSTORE_PATH = (
-    Path(__file__).parent.parent.parent / "sample_data" / "vectorstore"
+    Path(__file__).parent.parent / "sample_data" / "vectorstore"
 )
 SAMPLE_QA_PATH = (
-    Path(__file__).parent.parent.parent / "sample_data" / "synthetic_dataset.csv"
+    Path(__file__).parent.parent / "sample_data" / "synthetic_dataset.csv"
 )
 
 IPCC_REPORT_URL = (
