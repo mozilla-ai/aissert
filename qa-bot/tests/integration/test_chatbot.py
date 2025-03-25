@@ -8,8 +8,8 @@ from giskard.testing.tests.llm import (
 )
 
 import pandas as pd
-from blueprint.chatbot import Chatbot
-from blueprint.settings import IPCC_REPORT_URL, PROMPT_TEMPLATE, SAMPLE_VECTORSTORE_PATH, SAMPLE_QA_PATH
+from chatbot import Chatbot
+from settings import IPCC_REPORT_URL, PROMPT_TEMPLATE, SAMPLE_VECTORSTORE_PATH, SAMPLE_QA_PATH
 
 """
 examples = [

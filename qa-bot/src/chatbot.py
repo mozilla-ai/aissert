@@ -16,7 +16,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 import pandas as pd
 
-from blueprint.settings import IPCC_REPORT_URL, PROMPT_TEMPLATE, OUTPUT_FOLDER
+from settings import IPCC_REPORT_URL, PROMPT_TEMPLATE, OUTPUT_FOLDER
 
 
 class Chatbot:
