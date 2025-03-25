@@ -4,6 +4,9 @@ OUTPUT_FOLDER = Path(__file__).parent.parent.parent / "outputs"
 SAMPLE_VECTORSTORE_PATH = (
     Path(__file__).parent.parent.parent / "sample_data" / "vectorstore"
 )
+SAMPLE_QA_PATH = (
+    Path(__file__).parent.parent.parent / "sample_data" / "synthetic_dataset.csv"
+)
 
 IPCC_REPORT_URL = (
     "https://www.ipcc.ch/report/ar6/syr/downloads/report/IPCC_AR6_SYR_LongerReport.pdf"
