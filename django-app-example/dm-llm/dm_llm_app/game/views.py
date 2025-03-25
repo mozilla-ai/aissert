@@ -46,28 +46,31 @@ def dungeon_view(request):
     llm_provider = settings.LLM_PROVIDER.lower()
     api_endpoint = settings.LLM_API_ENDPOINT
     api_key = settings.LLM_API_KEY
+    llm_model=settings.LLM_MODEL
 
     # This is a simplified example assuming an OpenAI-like API; you might need to adapt it.
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
-    payload = {
-        "model": "gpt-3.5-turbo",
-        "messages": [
-            {"role": "system", "content": final_prompt}
-        ],
-        "max_tokens": 150
-    }
-
     try:
+        payload = {
+                "model": f"{llm_model}",
+                "messages": [
+                    {"role": "system", "content": final_prompt}
+                ],
+                "max_tokens": 150
+            }
+        print(payload)
         response = requests.post(api_endpoint, json=payload, headers=headers)
         response.raise_for_status()
         llm_result = response.json()
-        # Adjust extraction based on the chat API structure:
         narrative = llm_result.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+         
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        error_details = response.text if response is not None else "No response content"
+        return Response({"error": f"{str(e)}: {error_details}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
     return Response({"narrative": narrative})
