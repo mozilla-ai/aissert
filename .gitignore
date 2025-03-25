@@ -1,1 +1,5 @@
 .venv/
+django-app-example/dm-llm/env
+django-app-example/dm-llm/dm_llm_app/db.sqlite3
+django-app-example/dm-llm/dm_llm_app/game/__pycache__/
+*.pyc
