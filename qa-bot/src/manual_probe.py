@@ -1,8 +1,40 @@
 from loguru import logger
-import giskard
+import os
 import pandas as pd
+
+from giskard import Dataset, Model, scan
+from giskard.testing.tests.llm import (
+    test_llm_output_plausibility,
+    test_llm_char_injection,
+    test_llm_ground_truth_similarity,
+    test_llm_correctness,
+    test_llm_single_output_against_requirement,
+)
+
 from chatbot import Chatbot
-from settings import OUTPUT_FOLDER, IPCC_REPORT_URL, PROMPT_TEMPLATE
+from settings import OUTPUT_FOLDER, IPCC_REPORT_URL, PROMPT_TEMPLATE, SAMPLE_VECTORSTORE_PATH, SAMPLE_QA_PATH, TOKENIZERS_PARALLELISM
+
+os.environ["TOKENIZERS_PARALLELISM"] = TOKENIZERS_PARALLELISM
+
+
+def create_dataset():
+    df = pd.read_csv(SAMPLE_QA_PATH)
+
+    wrapped_dataset = Dataset(
+        name="Test Data Set", df=df, target="expected_answer"
+    )
+
+    return wrapped_dataset
+
+def create_mini_dataset():
+    examples = [
+        "Is sea level rise avoidable? When will it stop?",
+    ]
+    mini_dataset = Dataset(pd.DataFrame({"question": examples}), target=None)
+
+    return mini_dataset
+
+
 
 if __name__ == "__main__":
     bot = Chatbot(
@@ -11,7 +43,7 @@ if __name__ == "__main__":
         local=False,
         output_folder=OUTPUT_FOLDER,
     )
-    giskard_model = giskard.Model(
+    giskard_model = Model(
         model=bot.predict,
         model_type="text_generation",
         name="Climate Change Question Answering",
@@ -19,22 +51,18 @@ if __name__ == "__main__":
         feature_names=["question"],
     )
 
-    examples = [
-        "According to the IPCC report, what are key risks in the Europe?",
-        # "Is sea level rise avoidable? When will it stop?",
-    ]
-    giskard_dataset = giskard.Dataset(pd.DataFrame({"question": examples}), target=None)
 
-    # Testing it works...
-    answers = giskard_model.predict(giskard_dataset).prediction
-    logger.info([f"\n{q}: {a}" for q, a in zip(examples, answers)])
-
-    full_report = giskard.scan(giskard_model, giskard_dataset, only="hallucination")
-
-    # full_report = giskard.scan(giskard_model, giskard_dataset)
+    giskard_dataset = create_mini_dataset()
 
     html_path = OUTPUT_FOLDER / "scan_report.html"
-    html = full_report.to_html(filename=html_path, embed=True)
+    logger.info(f"Exporting to {html_path}")
+
+    full_report = scan(giskard_model, giskard_dataset, only=["hallucination"])
+
+    #full_report = scan(giskard_model, giskard_dataset)
+
+    html = full_report.to_html(filename=html_path, embed=False)
+    print(html)
     logger.info(f"Exported to {html_path}")
 
     json_path = OUTPUT_FOLDER / "scan_report.json"
