@@ -27,4 +27,4 @@ Question:
 Your answer:
 """
 
-TOKENIZERS_PARALLELISM="true"
+TOKENIZERS_PARALLELISM="false"

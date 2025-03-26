@@ -3,6 +3,7 @@ import os
 import pandas as pd
 
 from giskard import Dataset, Model, scan
+from giskard.llm import set_llm_model, set_embedding_model
 from giskard.testing.tests.llm import (
     test_llm_output_plausibility,
     test_llm_char_injection,
@@ -16,6 +17,8 @@ from settings import OUTPUT_FOLDER, IPCC_REPORT_URL, PROMPT_TEMPLATE, SAMPLE_VEC
 
 os.environ["TOKENIZERS_PARALLELISM"] = TOKENIZERS_PARALLELISM
 
+set_llm_model("mistral/mistral-large-latest")
+set_embedding_model("mistral/mistral-embed")
 
 def create_dataset():
     df = pd.read_csv(SAMPLE_QA_PATH)
@@ -56,7 +59,7 @@ if __name__ == "__main__":
     )
 
 
-    giskard_dataset = create_dataset()
+    giskard_dataset = create_mini_dataset()
 
     html_path = OUTPUT_FOLDER / "scan_report.html"
     logger.info(f"Exporting to {html_path}")
