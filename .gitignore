@@ -3,3 +3,14 @@ django-app-example/dm-llm/env
 django-app-example/dm-llm/dm_llm_app/db.sqlite3
 django-app-example/dm-llm/dm_llm_app/game/__pycache__/
 *.pyc
+/node_modules
+/vendor
+/public/storage
+/.env
+/storage/*.key
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+/bootstrap/cache/*
+.DS_Store
