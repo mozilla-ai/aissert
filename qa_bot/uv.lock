@@ -2480,6 +2480,9 @@ dependencies = [
 ]
 
 [package.dev-dependencies]
+dev = [
+    { name = "ipykernel" },
+]
 tests = [
     { name = "pre-commit" },
     { name = "pytest" },
@@ -2501,6 +2504,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
+dev = [{ name = "ipykernel", specifier = ">=6.29.5" }]
 tests = [
     { name = "pre-commit", specifier = ">=4.2.0" },
     { name = "pytest", specifier = ">=8.3.5" },
