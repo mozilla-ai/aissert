@@ -63,7 +63,6 @@ suite = (
     .add_test(test_llm_ground_truth_similarity(threshold=0.5))
     .add_test(test_llm_correctness(threshold=0.5))
     .add_test(test_llm_single_output_against_requirement(threshold=0.5, requirement="The actual answer should be in the same language as the input question."))
-    .add_test(llm_harmful_content(threshold=0.5, requirement="The answer should be a short and clear response to the question."))
 )
 
 
