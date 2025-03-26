@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dungeon Master Chat</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+      max-width: 800px;
+      margin: auto;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .settings {
+      padding: 16px;
+      border-bottom: 1px solid #ddd;
+      background-color: #e9ecef;
+    }
+    .settings h2 {
+      margin-top: 0;
+    }
+    .settings label {
+      display: block;
+      margin-top: 8px;
+      font-weight: bold;
+    }
+    .settings input,
+    .settings select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .chat-history {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      background-color: #f7f7f7;
+    }
+    .message {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .message.player {
+      align-items: flex-end;
+    }
+    .message.dm {
+      align-items: flex-start;
+    }
+    .message .content {
+      max-width: 70%;
+      padding: 12px;
+      border-radius: 8px;
+      background-color: #f1f0f0;
+      word-wrap: break-word;
+    }
+    .message.player .content {
+      background-color: #d1ecf1;
+    }
+    .message.dm .content {
+      background-color: #fff3cd;
+    }
+    .input-area {
+      padding: 16px;
+      border-top: 1px solid #ddd;
+      background-color: #e9ecef;
+      display: flex;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-right: 8px;
+    }
+    .input-area button {
+      padding: 10px 16px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .input-area button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="container">
+    <!-- Game Settings at the Top -->
+    <div class="settings">
+      <h2>Game Settings</h2>
+      <label for="world_context">World Context:</label>
+      <input id="world_context" v-model="world_context" type="text" placeholder="e.g., A mysterious enchanted forest" />
+
+      <label for="genre">Genre:</label>
+      <select id="genre" v-model="genre">
+        <option value="Fantasy">Fantasy</option>
+        <option value="Sci-Fi">Sci-Fi</option>
+      </select>
+
+      <label for="difficulty">Difficulty:</label>
+      <select id="difficulty" v-model="difficulty">
+        <option value="Easy">Easy</option>
+        <option value="Medium">Medium</option>
+        <option value="Hard">Hard</option>
+      </select>
+
+      <label for="narrative_tone">Narrative Tone:</label>
+      <select id="narrative_tone" v-model="narrative_tone">
+        <option value="Dramatic">Dramatic</option>
+        <option value="Lighthearted">Lighthearted</option>
+        <option value="Grim">Grim</option>
+      </select>
+
+      <label for="campaign_name">Campaign Name:</label>
+      <input id="campaign_name" v-model="campaign_name" type="text" placeholder="New Campaign" />
+    </div>
+
+    <!-- Chat History -->
+    <div class="chat-history">
+      <div v-for="(msg, index) in chat" :key="index" class="message" :class="msg.author.toLowerCase()">
+        <div class="content">
+          <strong v-if="msg.author === 'DM'">DM:</strong>
+          <strong v-else>You:</strong>
+          {{ msg.content }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Player Input -->
+    <div class="input-area">
+      <input v-model="user_question" type="text" placeholder="Enter your action or question" @keyup.enter="submitMessage" />
+      <button @click="submitMessage">Send</button>
+    </div>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        world_context: '',
+        genre: 'Fantasy',
+        difficulty: 'Easy',
+        narrative_tone: 'Dramatic',
+        campaign_name: '',
+        user_question: '',
+        chat: []
+      },
+      methods: {
+        submitMessage() {
+          if (this.user_question.trim() === '') return;
+          // Append the player's message to the chat history.
+          this.chat.push({ author: 'Player', content: this.user_question });
+          
+          // Prepare payload for the API.
+          const payload = {
+            world_context: this.world_context,
+            genre: this.genre,
+            difficulty: this.difficulty,
+            narrative_tone: this.narrative_tone,
+            campaign_name: this.campaign_name,
+            user_question: this.user_question
+          };
+
+          // Clear the input field.
+          this.user_question = '';
+
+          axios.post('http://localhost:8000/api/dungeon/', payload)
+            .then((res) => {
+              // Append DM response to chat.
+              this.chat.push({ author: 'DM', content: res.data.narrative });
+              // Scroll chat history to the bottom.
+              this.$nextTick(() => {
+                const chatHistory = document.querySelector('.chat-history');
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+              });
+            })
+            .catch((err) => {
+              let errorMsg = "An unexpected error occurred.";
+              if (err.response && err.response.data && err.response.data.error) {
+                errorMsg = err.response.data.error;
+              }
+              this.chat.push({ author: 'DM', content: "Error: " + errorMsg });
+            });
+        }
+      }
+    });
+  </script>
+</body>
+</html>
