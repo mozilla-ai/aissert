@@ -3,6 +3,7 @@ import os
 import pytest
 from pathlib import Path
 from giskard import Dataset, Model, Suite
+from giskard.llm import set_llm_model, set_embedding_model
 from giskard.testing.tests.llm import (
     test_llm_output_plausibility,
     test_llm_char_injection,
@@ -16,7 +17,8 @@ from chatbot import Chatbot
 from settings import IPCC_REPORT_URL, PROMPT_TEMPLATE, SAMPLE_VECTORSTORE_PATH, SAMPLE_QA_PATH, TOKENIZERS_PARALLELISM
 
 os.environ["TOKENIZERS_PARALLELISM"] = TOKENIZERS_PARALLELISM
-
+set_llm_model("mistral/mistral-large-latest")
+set_embedding_model("mistral/mistral-embed")
 
 logger.debug(f"Using {SAMPLE_VECTORSTORE_PATH=}")
 logger.debug(f"Using {IPCC_REPORT_URL=}")
