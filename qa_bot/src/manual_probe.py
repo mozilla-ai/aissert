@@ -20,11 +20,13 @@ os.environ["TOKENIZERS_PARALLELISM"] = TOKENIZERS_PARALLELISM
 set_llm_model("mistral/mistral-large-latest")
 set_embedding_model("mistral/mistral-embed")
 
-def create_dataset():
+def create_dataset(number_of_rows: int = 3):
     df = pd.read_csv(SAMPLE_QA_PATH)
 
+    df_last_rows = df.tail(number_of_rows)
+
     wrapped_dataset = Dataset(
-        name="Test Data Set", df=df, target="expected_answer"
+        name="Test Data Set", df=df_last_rows, target="expected_answer"
     )
 
     return wrapped_dataset
@@ -32,10 +34,10 @@ def create_dataset():
 def create_mini_dataset():
     examples = [
         "Is sea level rise avoidable? When will it stop?",
-        "What are the benefits of climate action for human health?",
-        "What is the importance of equity in climate action?",
-        "How can climate governance support effective climate action?",
-        "What is the role of technology in climate mitigation and adaptation?"
+    #    "What are the benefits of climate action for human health?",
+    #    "What is the importance of equity in climate action?",
+    #    "How can climate governance support effective climate action?",
+    #    "What is the role of technology in climate mitigation and adaptation?"
     ]
     mini_dataset = Dataset(pd.DataFrame({"question": examples}), target=None)
 
@@ -59,14 +61,14 @@ if __name__ == "__main__":
     )
 
 
-    giskard_dataset = create_mini_dataset()
+    giskard_dataset = create_dataset()
 
     html_path = OUTPUT_FOLDER / "scan_report.html"
     logger.info(f"Exporting to {html_path}")
 
     #full_report = scan(giskard_model, giskard_dataset, only=["hallucination"])
 
-    full_report = scan(giskard_model, giskard_dataset)
+    full_report = scan(giskard_model, giskard_dataset, only=["hallucination", "text_generation"])
 
     full_report.to_html(filename=html_path, embed=False)
     logger.info(f"Exported to {html_path}")
