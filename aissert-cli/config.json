@@ -1,0 +1,21 @@
+{
+    "input_mapping": {
+      "world_context": "world_context",
+      "genre": "genre",
+      "difficulty": "difficulty",
+      "narrative_tone": "narrative_tone",
+      "campaign_name": "campaign_name",
+      "user_question": "user_question"
+    },
+    "output_mapping": {
+      "predictions": "narrative"
+    },
+    "request": {
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer YOUR_TOKEN"
+      },
+      "method": "POST"
+    }
+  }
+  

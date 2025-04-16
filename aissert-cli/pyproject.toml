@@ -1,0 +1,18 @@
+[project]
+name = "aissert-cli"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "giskard[llm]>=2.16.2",
+    "pandas>=2.2.3",
+    "pyyaml>=6.0.2",
+    "requests>=2.32.3",
+]
+[dependencies]
+pandas   = "latest"
+requests = "latest"
+PyYAML   = "latest"
+giskard  = { git = "https://github.com/Giskard-AI/giskard.git", tag = "2.16.2" }
+

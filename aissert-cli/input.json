@@ -1,0 +1,19 @@
+[
+    {
+      "world_context": "A mysterious enchanted forest",
+      "genre": "Fantasy",
+      "difficulty": "Medium",
+      "narrative_tone": "Dramatic",
+      "campaign_name": "The Lost Kingdom",
+      "user_question": "What do I do next?"
+    },
+    {
+      "world_context": "A futuristic cityscape",
+      "genre": "Sci-Fi",
+      "difficulty": "Hard",
+      "narrative_tone": "Grim",
+      "campaign_name": "Cyber Odyssey",
+      "user_question": "How can I infiltrate the enemy headquarters?"
+    }
+  ]
+  
