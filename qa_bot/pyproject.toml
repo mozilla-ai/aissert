@@ -1,5 +1,5 @@
 [project]
-name = "qa-bot"
+name = "qa_bot"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -27,6 +27,9 @@ pythonpath = [
 ]
 
 [dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+]
 tests = [
     "pre-commit>=4.2.0",
     "pytest>=8.3.5",

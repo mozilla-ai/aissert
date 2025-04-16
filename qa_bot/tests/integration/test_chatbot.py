@@ -1,7 +1,9 @@
 from loguru import logger
+import os
 import pytest
 from pathlib import Path
 from giskard import Dataset, Model, Suite
+from giskard.llm import set_llm_model, set_embedding_model
 from giskard.testing.tests.llm import (
     test_llm_output_plausibility,
     test_llm_char_injection,
@@ -12,20 +14,11 @@ from giskard.testing.tests.llm import (
 
 import pandas as pd
 from chatbot import Chatbot
-from settings import IPCC_REPORT_URL, PROMPT_TEMPLATE, SAMPLE_VECTORSTORE_PATH, SAMPLE_QA_PATH
+from settings import IPCC_REPORT_URL, PROMPT_TEMPLATE, SAMPLE_VECTORSTORE_PATH, SAMPLE_QA_PATH, TOKENIZERS_PARALLELISM
 
-"""
-examples = [
-    "According to the IPCC report, what are key risks in the Europe?",
-    "Is sea level rise avoidable? When will it stop?",
-    "What are the main drivers of global warming?",
-    "What is the importance of equity in climate action?",
-    "What are the benefits of climate action for human health?",
-    "How can climate governance support effective climate action?",
-    "What is the role of technology in climate mitigation and adaptation?",   
-    "How can climate education and awareness contribute to climate action?",
-]
-"""
+os.environ["TOKENIZERS_PARALLELISM"] = TOKENIZERS_PARALLELISM
+set_llm_model("mistral/mistral-large-latest")
+set_embedding_model("mistral/mistral-embed")
 
 logger.debug(f"Using {SAMPLE_VECTORSTORE_PATH=}")
 logger.debug(f"Using {IPCC_REPORT_URL=}")
@@ -77,4 +70,4 @@ suite = (
 
 @pytest.mark.parametrize("test_partial", suite.to_unittest(), ids=lambda t: t.fullname)
 def test_chatbot(test_partial):
-    test_partial.assert_()
+    test_partial.execute()
