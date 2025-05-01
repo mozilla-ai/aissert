@@ -1,0 +1,4 @@
+pyyaml
+pandas
+requests
+git+https://github.com/Giskard-AI/giskard.git
