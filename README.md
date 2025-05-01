@@ -18,7 +18,9 @@ python3.12 -m venv .venv source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-3. Create a test config.json
+## Test 
+
+1. Create a test config.json
 
 ```
  {
@@ -43,7 +45,7 @@ pip install -r requirements.txt
   }
   ```
 
-  4. Test
+2. Test
    
 ```
 cd aissert-cli
