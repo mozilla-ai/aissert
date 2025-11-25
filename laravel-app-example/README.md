@@ -19,5 +19,3 @@ Run the server with
 
 
 Open the index.html file in a browser and you can use the DM!
-
-
