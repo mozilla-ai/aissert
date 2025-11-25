@@ -28,7 +28,7 @@ logger.debug(f"Using {PROMPT_TEMPLATE=}")
 
 
 # Cannot be a fixture, as suite needs to access it directly
-def create_dataset():
+def create_dataset() -> pd.DataFrame:
     """Create a Giskard dataset from sample QA CSV file.
 
     Returns:
@@ -77,7 +77,7 @@ suite = (
 
 
 @pytest.mark.parametrize("test_partial", suite.to_unittest(), ids=lambda t: t.fullname)
-def test_chatbot(test_partial):
+def test_chatbot(test_partial: bool) -> None:
     """Execute parametrized Giskard test cases for the chatbot.
 
     Args:

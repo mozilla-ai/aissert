@@ -1,7 +1,7 @@
 """Placeholder main entry point for aissert package."""
 
 
-def main():
+def main() -> None:
     """Print hello message."""
     print("Hello from aissert!")
 

@@ -26,7 +26,7 @@ class Chatbot:
         local: bool = False,
         output_folder: Path = OUTPUT_FOLDER,
         serialized_db_path: str | None = None,
-    ):
+    ) -> None:
         """Initialize the Chatbot.
 
         Args:
@@ -77,7 +77,7 @@ class Chatbot:
         logger.info("Climate QA chain created")
         return climate_qa_chain
 
-    def predict(self, df: pd.DataFrame):
+    def predict(self, df: pd.DataFrame) -> list[dict[str, str]]:
         """Wraps the LLM call in a simple Python function.
 
         Args:

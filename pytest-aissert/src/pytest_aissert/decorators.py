@@ -1,5 +1,8 @@
 """Decorators and prompt generators for AI-based testing."""
 
+from collections.abc import Callable
+from typing import Any
+
 from decorator import decorator
 
 current_report = {}
@@ -14,7 +17,7 @@ def get_current_report() -> dict:
     return current_report
 
 
-def ai_test(threshold=0.5, *args, **kwargs):
+def ai_test(threshold: float = 0.5, *args: Any, **kwargs: Any) -> Callable[[Any], Any]:  # noqa: ANN401
     """Decorator for AI-based test assertions with threshold.
 
     Args:
@@ -27,7 +30,7 @@ def ai_test(threshold=0.5, *args, **kwargs):
     """
     name = kwargs["name"]
 
-    def ai_test_dec(func, *args, **kwargs):
+    def ai_test_dec(func: Callable[..., float], *args: Any, **kwargs: Any) -> None:  # noqa: ANN401
         # Add functionality before the original function call.
         metric = func(*args, **kwargs)
         # Add functionality after the original function call.
@@ -37,7 +40,7 @@ def ai_test(threshold=0.5, *args, **kwargs):
     return decorator(ai_test_dec)
 
 
-def llm_judge(threshold=0.5, *args, **kwargs):
+def llm_judge(threshold: float = 0.5, *args: Any, **kwargs: Any) -> Callable[[Any], Any]:  # noqa: ANN401
     """Decorator for LLM-as-a-judge test assertions with threshold.
 
     This decorator is specifically designed for tests that use LLM-based
@@ -55,7 +58,7 @@ def llm_judge(threshold=0.5, *args, **kwargs):
     """
     name = kwargs["name"]
 
-    def llm_judge_dec(func, *args, **kwargs):
+    def llm_judge_dec(func: Callable[..., float], *args: Any, **kwargs: Any) -> None:  # noqa: ANN401
         # Add functionality before the original function call.
         metric = func(*args, **kwargs)
         # Add functionality after the original function call.

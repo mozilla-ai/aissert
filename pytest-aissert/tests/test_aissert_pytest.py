@@ -1,7 +1,9 @@
 """Tests for pytest-aissert plugin."""
 
+import pytest
 
-def test_hello_ini_setting(pytester):
+
+def test_hello_ini_setting(pytester: pytest.Pytester) -> None:
     """Test that HELLO ini setting can be configured and accessed."""
     pytester.makeini("""
         [pytest]

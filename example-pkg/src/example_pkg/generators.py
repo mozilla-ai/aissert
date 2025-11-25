@@ -1,19 +1,22 @@
 """LLM generator functions using litellm."""
 
+from collections.abc import Callable
+from typing import Any
+
 from litellm import completion
 
 # import litellm
 # litellm._turn_on_debug()
 
 
-def gen_use_local_llamafile():
+def gen_use_local_llamafile() -> Callable[[], Any]:  # noqa: ANN401
     """Generate a function that uses local llamafile for LLM completion.
 
     Returns:
         Function that makes completion requests to local llamafile instance.
     """
 
-    def use_local_llamafile():
+    def use_local_llamafile() -> Any:  # noqa: ANN401
         """Make a completion request to local llamafile server.
 
         Returns:

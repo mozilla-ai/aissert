@@ -21,7 +21,7 @@ set_llm_model("mistral/mistral-large-latest")
 set_embedding_model("mistral/mistral-embed")
 
 
-def create_dataset(number_of_rows: int = 3):
+def create_dataset(number_of_rows: int = 3) -> pd.DataFrame:
     """Create a Giskard dataset from sample QA data.
 
     Args:
@@ -39,7 +39,7 @@ def create_dataset(number_of_rows: int = 3):
     return wrapped_dataset
 
 
-def create_mini_dataset():
+def create_mini_dataset() -> pd.DataFrame:
     """Create a small dataset with example climate change questions.
 
     Returns:

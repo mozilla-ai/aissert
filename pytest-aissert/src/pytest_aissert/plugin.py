@@ -2,17 +2,18 @@
 
 from pathlib import Path
 
+import pytest
 import yaml
 
 import pytest_aissert.decorators as decorators
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: pytest.Parser) -> None:
     """Add pytest configuration options for aissert plugin."""
     parser.addini("HELLO", "Dummy pytest.ini setting")
 
 
-def pytest_generate_tests(metafunc):
+def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
     """Load tests from external YAML files.
 
     This allows parametrizing tests with test cases found in YAML data files.
@@ -35,6 +36,6 @@ def pytest_generate_tests(metafunc):
         )
 
 
-def pytest_sessionfinish(session, exitstatus):
+def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     """Print AI test metrics report at end of test session."""
     print(f"<<< {decorators.current_report} >>>")

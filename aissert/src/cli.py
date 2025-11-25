@@ -11,7 +11,7 @@ from aissert.src.metrics.base import some_metric
 @click.argument("input")
 @click.argument("output")
 @click.option("-t", "--threshold", type=float, default=0.5, show_default=True)
-def check_metric(metric, input, output, threshold):
+def check_metric(metric: str, input: str, output: str, threshold: float) -> None:
     """Execute a certain metric."""
     metric_value = some_metric("", "")
     if metric_value < threshold:

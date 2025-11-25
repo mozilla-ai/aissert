@@ -44,10 +44,12 @@ select = [
     "ISC",  # flake8-implicit-str-concat
     "PTH",  # flake8-use-pathlib
     "D",    # pydocstyle (docstrings)
+    "ANN",  # flake8-annotations (type hints)
 ]
 
 # Rules to ignore
 ignore = [
+    "ANN401",  # Allow typing.Any when necessary for flexibility
 ]
 
 # Rules that should not be auto-fixed
