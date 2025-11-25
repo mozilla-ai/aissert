@@ -1,0 +1,9 @@
+[project]
+name = "aissert-workspace"
+version = "0.1.0"
+description = "A lightweight testing suite for AI applications to ensure your generative outputs behave as expected"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv.workspace]
+members = ["aissert", "aissert-cli", "pytest-aissert", "qa_bot", "example-pkg"]

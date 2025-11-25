@@ -1,16 +1,57 @@
+# Python
 .venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Testing
+.pytest_cache/
+.coverage
+.tox/
+htmlcov/
+
+# Type checking
+.mypy_cache/
+.pytype/
+.pyre/
+.ruff_cache/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Django specific
 django-app-example/dm-llm/env
 django-app-example/dm-llm/dm_llm_app/db.sqlite3
 django-app-example/dm-llm/dm_llm_app/game/__pycache__/
-*.pyc
+
+# Laravel specific
 /node_modules
 /vendor
 /public/storage
-/.env
 /storage/*.key
 /storage/framework/cache/*
 /storage/framework/sessions/*
 /storage/framework/views/*
 /storage/logs/*
 /bootstrap/cache/*
-.DS_Store
+
+# Environment
+.env
+*.env.local

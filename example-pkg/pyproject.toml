@@ -3,7 +3,7 @@ name = "example-pkg"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
     "aissert",
     # TODO move to optional test dep group
@@ -15,5 +15,5 @@ dependencies = [
 example = "example_pkg.main:main_cli"
 
 [tool.uv.sources]
-aissert = { path = "../aissert", editable = true }
-pytest-aissert = { path = "../pytest-aissert", editable = true }
+aissert = { workspace = true }
+pytest-aissert = { workspace = true }
