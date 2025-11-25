@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
+"""CLI tool for running AI security tests and model predictions using Giskard."""
+
 import argparse
 import json
-import yaml
-import pandas as pd
-import requests
 import logging
-import os
 import sys
 import time
+from pathlib import Path
+
+import pandas as pd
+import requests
+import yaml
 
 # Import the official Giskard package.
 try:
@@ -17,10 +20,19 @@ except ImportError:
     print("pip install git+https://github.com/Giskard-AI/giskard.git")
     sys.exit(1)
 
+
 def setup_logging(verbose: bool):
+    """Set up logging configuration with file and console handlers.
+
+    Args:
+        verbose: If True, set log level to DEBUG, otherwise INFO.
+
+    Returns:
+        Configured logger instance.
+    """
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG if verbose else logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG if verbose else logging.INFO)
     ch.setFormatter(formatter)
@@ -31,16 +43,30 @@ def setup_logging(verbose: bool):
     logger.addHandler(fh)
     return logger
 
+
 logger = setup_logging(verbose=False)
 
+
 def load_config(config_path: str) -> dict:
-    if not os.path.exists(config_path):
+    """Load configuration from JSON or YAML file.
+
+    Args:
+        config_path: Path to configuration file (.json, .yaml, or .yml).
+
+    Returns:
+        Dictionary containing configuration data.
+
+    Raises:
+        SystemExit: If file not found or unsupported format.
+    """
+    config_file = Path(config_path)
+    if not config_file.exists():
         logger.error("Configuration file not found: %s", config_path)
         sys.exit(1)
-    with open(config_path, 'r') as f:
-        if config_path.endswith('.json'):
+    with config_file.open() as f:
+        if config_path.endswith(".json"):
             config = json.load(f)
-        elif config_path.endswith(('.yaml', '.yml')):
+        elif config_path.endswith((".yaml", ".yml")):
             config = yaml.safe_load(f)
         else:
             logger.error("Unsupported config file format. Use .json or .yaml/.yml")
@@ -48,13 +74,26 @@ def load_config(config_path: str) -> dict:
     logger.info("Configuration loaded successfully from %s", config_path)
     return config
 
+
 def load_dataset(input_path: str) -> pd.DataFrame:
-    if not os.path.exists(input_path):
+    """Load dataset from CSV or JSON file.
+
+    Args:
+        input_path: Path to dataset file (.csv or .json).
+
+    Returns:
+        DataFrame containing the dataset.
+
+    Raises:
+        SystemExit: If file not found or unsupported format.
+    """
+    input_file = Path(input_path)
+    if not input_file.exists():
         logger.error("Input file not found: %s", input_path)
         sys.exit(1)
-    if input_path.endswith('.csv'):
+    if input_path.endswith(".csv"):
         df = pd.read_csv(input_path)
-    elif input_path.endswith('.json'):
+    elif input_path.endswith(".json"):
         df = pd.read_json(input_path)
     else:
         logger.error("Unsupported input file format. Use .csv or .json")
@@ -62,7 +101,19 @@ def load_dataset(input_path: str) -> pd.DataFrame:
     logger.info("Dataset loaded successfully from %s", input_path)
     return df
 
+
 def api_call(row: pd.Series, config: dict, api_endpoint: str, max_retries: int = 3):
+    """Make API call with data from a DataFrame row.
+
+    Args:
+        row: DataFrame row containing input data.
+        config: Configuration dictionary with input_mapping and request params.
+        api_endpoint: API endpoint URL.
+        max_retries: Maximum number of retry attempts on failure.
+
+    Returns:
+        JSON response from API or None if all attempts fail.
+    """
     input_mapping = config.get("input_mapping", {})
     payload = {}
     for df_col, api_param in input_mapping.items():
@@ -103,13 +154,23 @@ def api_call(row: pd.Series, config: dict, api_endpoint: str, max_retries: int =
     logger.error("Exceeded maximum retry attempts for API call.")
     return None
 
+
 def transform_response(api_response, config: dict):
+    """Transform API response according to output mapping configuration.
+
+    Args:
+        api_response: Raw API response (dict or other type).
+        config: Configuration dictionary with output_mapping.
+
+    Returns:
+        Transformed response based on output_mapping, or original response if no mapping.
+    """
     output_mapping = config.get("output_mapping", {})
     if not api_response:
         return None
     transformed_output = {}
     for target_field, response_key in output_mapping.items():
-        keys = response_key.split('.')
+        keys = response_key.split(".")
         value = api_response
         for key in keys:
             if isinstance(value, dict) and key in value:
@@ -121,7 +182,18 @@ def transform_response(api_response, config: dict):
         transformed_output[target_field] = value
     return transformed_output
 
+
 def predict(df: pd.DataFrame, config: dict, api_endpoint: str):
+    """Make predictions for all rows in a DataFrame using API calls.
+
+    Args:
+        df: DataFrame containing input data.
+        config: Configuration dictionary.
+        api_endpoint: API endpoint URL.
+
+    Returns:
+        List of transformed predictions for each row.
+    """
     predictions = []
     for index, row in df.iterrows():
         logger.info("Processing row index %d", index)
@@ -130,8 +202,21 @@ def predict(df: pd.DataFrame, config: dict, api_endpoint: str):
         predictions.append(transformed)
     return predictions
 
+
 def create_giskard_model(model_name: str, description: str, feature_names: list, predict_function):
+    """Create a Giskard model wrapper for testing.
+
+    Args:
+        model_name: Name of the model.
+        description: Description of the model.
+        feature_names: List of feature column names.
+        predict_function: Prediction function to wrap.
+
+    Returns:
+        Giskard PredictionFunctionModel instance.
+    """
     from giskard.models.automodel import PredictionFunctionModel
+
     # Set scanable=True to enable scanning (if supported by the installed Giskard version)
     return PredictionFunctionModel(
         name=model_name,
@@ -139,10 +224,19 @@ def create_giskard_model(model_name: str, description: str, feature_names: list,
         model_type="text_generation",
         feature_names=feature_names,
         description=description,
-        scanable=True
+        scanable=True,
     )
 
+
 def make_serializable(predictions):
+    """Convert predictions to JSON-serializable format.
+
+    Args:
+        predictions: List of predictions (may contain dicts or objects).
+
+    Returns:
+        List of JSON-serializable dictionaries.
+    """
     serializable = []
     for pred in predictions:
         if hasattr(pred, "dict"):
@@ -153,14 +247,33 @@ def make_serializable(predictions):
             serializable.append(str(pred))
     return serializable
 
+
 # Define a DummyDataset class that mimics Giskard's expected Dataset interface.
 class DummyDataset:
+    """Dummy dataset class that mimics Giskard's Dataset interface."""
+
     def __init__(self, df, target=None):
+        """Initialize DummyDataset.
+
+        Args:
+            df: Pandas DataFrame containing the data.
+            target: Optional target column name.
+        """
         self.df = df
         self.row_hashes = pd.Series([hash(tuple(row)) for row in df.values])
         self.column_dtypes = df.dtypes.to_dict()
         self.target = target
+
     def slice(self, func, row_level=False):
+        """Apply slicing function to filter dataset rows.
+
+        Args:
+            func: Function to apply for filtering rows.
+            row_level: If True, apply function at row level.
+
+        Returns:
+            Filtered DummyDataset instance.
+        """
         try:
             mask = self.df.apply(func, axis=1)
             if mask.dtype != bool:
@@ -172,7 +285,12 @@ class DummyDataset:
             logger.warning("Error during slicing: %s. Returning full dataset.", e)
             return self
 
+
 def main():
+    """Main entry point for aissert-cli.
+
+    Parses command-line arguments, makes API predictions, and optionally runs Giskard security tests.
+    """
     parser = argparse.ArgumentParser(
         description="aissert-cli: Wrap API calls into a Giskard model, output predictions, and run tests."
     )
@@ -187,31 +305,33 @@ def main():
 
     global logger
     logger = setup_logging(args.verbose)
-    
+
     config = load_config(args.config)
 
     if args.input:
         df = load_dataset(args.input)
     else:
         logger.info("No input file provided; using a sample dataset.")
-        df = pd.DataFrame([
-            {
-                "world_context": "A mysterious enchanted forest",
-                "genre": "Fantasy",
-                "difficulty": "Medium",
-                "narrative_tone": "Dramatic",
-                "campaign_name": "The Lost Kingdom",
-                "user_question": "What do I do next?"
-            },
-            {
-                "world_context": "A futuristic cityscape",
-                "genre": "Sci-Fi",
-                "difficulty": "Hard",
-                "narrative_tone": "Grim",
-                "campaign_name": "Cyber Odyssey",
-                "user_question": "How can I infiltrate the enemy headquarters?"
-            }
-        ])
+        df = pd.DataFrame(
+            [
+                {
+                    "world_context": "A mysterious enchanted forest",
+                    "genre": "Fantasy",
+                    "difficulty": "Medium",
+                    "narrative_tone": "Dramatic",
+                    "campaign_name": "The Lost Kingdom",
+                    "user_question": "What do I do next?",
+                },
+                {
+                    "world_context": "A futuristic cityscape",
+                    "genre": "Sci-Fi",
+                    "difficulty": "Hard",
+                    "narrative_tone": "Grim",
+                    "campaign_name": "Cyber Odyssey",
+                    "user_question": "How can I infiltrate the enemy headquarters?",
+                },
+            ]
+        )
 
     dataset = DummyDataset(df)
 
@@ -224,7 +344,7 @@ def main():
         model_name="aissert_model",
         description="A model wrapping API calls for predictions.",
         feature_names=feature_names,
-        predict_function=model_predict
+        predict_function=model_predict,
     )
 
     predictions = model.predict(dataset)
@@ -234,7 +354,8 @@ def main():
     serializable_predictions = make_serializable(predictions)
     if args.output:
         try:
-            with open(args.output, "w") as fout:
+            output_file = Path(args.output)
+            with output_file.open("w") as fout:
                 json.dump(serializable_predictions, fout, indent=2)
             logger.info("Predictions successfully written to %s", args.output)
         except Exception as e:
@@ -244,13 +365,6 @@ def main():
     if args.scan:
         logger.info("Initiating full Giskard tests...")
         try:
-            # Prepare scan configuration; ensure OPENAI_API_KEY is set in your environment.
-            scan_config = {
-                "llm_provider": "openai",
-                "api_key": os.environ.get("OPENAI_API_KEY"),
-                "temperature": 0.7,
-                "max_tokens": 500
-            }
             # run_scan returns an HTML string with the report.
             scan_report = giskard.scan(model=model)
             logger.info("Model tests completed successfully.")
@@ -261,15 +375,16 @@ def main():
     if args.report_file:
         try:
             # Convert the scan report to a string. If there's a to_html() method, use that.
-            report_str = scan_report.to_html() if hasattr(scan_report, 'to_html') else str(scan_report)
-            with open(args.report_file, "w") as f:
+            report_str = scan_report.to_html() if hasattr(scan_report, "to_html") else str(scan_report)
+            report_file = Path(args.report_file)
+            with report_file.open("w") as f:
                 f.write(report_str)
             logger.info("Test report written to %s", args.report_file)
         except Exception as e:
             logger.error("Failed to write test report to file: %s", e)
     else:
         print("Test Report:")
-        print(scan_report.to_html() if hasattr(scan_report, 'to_html') else str(scan_report))
+        print(scan_report.to_html() if hasattr(scan_report, "to_html") else str(scan_report))
 
 
 if __name__ == "__main__":
