@@ -1,9 +1,0 @@
-pyproject.toml
-src/cli.py
-src/aissert.egg-info/PKG-INFO
-src/aissert.egg-info/SOURCES.txt
-src/aissert.egg-info/dependency_links.txt
-src/aissert.egg-info/entry_points.txt
-src/aissert.egg-info/requires.txt
-src/aissert.egg-info/top_level.txt
-src/test_lib/base.py

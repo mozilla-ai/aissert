@@ -1,2 +1,0 @@
-[console_scripts]
-example = example_pkg.main:main_cli
