@@ -1,20 +1,22 @@
-from loguru import logger
+"""Integration tests for climate QA chatbot using Giskard test suite."""
+
 import os
-import pytest
 from pathlib import Path
-from giskard import Dataset, Model, Suite
-from giskard.llm import set_llm_model, set_embedding_model
-from giskard.testing.tests.llm import (
-    test_llm_output_plausibility,
-    test_llm_char_injection,
-    test_llm_ground_truth_similarity,
-    test_llm_correctness,
-    test_llm_single_output_against_requirement,
-)
 
 import pandas as pd
+import pytest
 from chatbot import Chatbot
-from settings import IPCC_REPORT_URL, PROMPT_TEMPLATE, SAMPLE_VECTORSTORE_PATH, SAMPLE_QA_PATH, TOKENIZERS_PARALLELISM
+from giskard import Dataset, Model, Suite
+from giskard.llm import set_embedding_model, set_llm_model
+from giskard.testing.tests.llm import (
+    test_llm_char_injection,
+    test_llm_correctness,
+    test_llm_ground_truth_similarity,
+    test_llm_output_plausibility,
+    test_llm_single_output_against_requirement,
+)
+from loguru import logger
+from settings import IPCC_REPORT_URL, PROMPT_TEMPLATE, SAMPLE_QA_PATH, SAMPLE_VECTORSTORE_PATH, TOKENIZERS_PARALLELISM
 
 os.environ["TOKENIZERS_PARALLELISM"] = TOKENIZERS_PARALLELISM
 set_llm_model("mistral/mistral-large-latest")
@@ -27,14 +29,16 @@ logger.debug(f"Using {PROMPT_TEMPLATE=}")
 
 # Cannot be a fixture, as suite needs to access it directly
 def create_dataset():
+    """Create a Giskard dataset from sample QA CSV file.
+
+    Returns:
+        Giskard Dataset instance with test data.
+    """
     df = pd.read_csv(SAMPLE_QA_PATH)
 
-    wrapped_dataset = Dataset(
-        name="Test Data Set", df=df, target="expected_answer"
-    )
+    wrapped_dataset = Dataset(name="Test Data Set", df=df, target="expected_answer")
 
     return wrapped_dataset
-
 
 
 chatbot = Chatbot(
@@ -64,10 +68,19 @@ suite = (
     .add_test(test_llm_char_injection(threshold=0.5))
     .add_test(test_llm_ground_truth_similarity(threshold=0.5))
     .add_test(test_llm_correctness(threshold=0.5))
-    .add_test(test_llm_single_output_against_requirement(threshold=0.5, requirement="The actual answer should be in the same language as the input question."))
+    .add_test(
+        test_llm_single_output_against_requirement(
+            threshold=0.5, requirement="The actual answer should be in the same language as the input question."
+        )
+    )
 )
 
 
 @pytest.mark.parametrize("test_partial", suite.to_unittest(), ids=lambda t: t.fullname)
 def test_chatbot(test_partial):
+    """Execute parametrized Giskard test cases for the chatbot.
+
+    Args:
+        test_partial: Giskard test partial to execute.
+    """
     test_partial.execute()
