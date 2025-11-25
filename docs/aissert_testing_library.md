@@ -7,4 +7,4 @@ AIssert is a library that can be used to run tests and provide metrics for your 
 
 # How to write new tests
 
-Tests are pytest test functions that return a 
+Tests are pytest test functions that return a
