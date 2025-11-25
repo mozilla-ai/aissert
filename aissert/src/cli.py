@@ -1,14 +1,18 @@
+"""CLI tool for running AI metrics checks."""
+
+import sys
+
 import click
 from aissert.src.metrics.base import some_metric
-import sys
+
 
 @click.command()
 @click.argument("metric")
 @click.argument("input")
 @click.argument("output")
-@click.option('-t' , '--threshold', type=float, default=0.5, show_default=True)
+@click.option("-t", "--threshold", type=float, default=0.5, show_default=True)
 def check_metric(metric, input, output, threshold):
-    """Execute a certain metric"""
+    """Execute a certain metric."""
     metric_value = some_metric("", "")
     if metric_value < threshold:
         # TODO: log instead of print?
@@ -17,5 +21,6 @@ def check_metric(metric, input, output, threshold):
     else:
         print(metric)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     check_metric()

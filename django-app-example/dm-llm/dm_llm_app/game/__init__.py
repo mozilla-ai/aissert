@@ -1,0 +1,1 @@
+"""Django game application package."""

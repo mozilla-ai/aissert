@@ -1,4 +1,8 @@
+"""Placeholder main entry point for aissert-cli package."""
+
+
 def main():
+    """Print hello message."""
     print("Hello from aissert-cli!")
 
 

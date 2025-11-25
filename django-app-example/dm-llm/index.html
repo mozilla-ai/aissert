@@ -171,7 +171,7 @@
           if (this.user_question.trim() === '') return;
           // Append the player's message to the chat history.
           this.chat.push({ author: 'Player', content: this.user_question });
-          
+
           // Prepare payload for the API.
           const payload = {
             world_context: this.world_context,

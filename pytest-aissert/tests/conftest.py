@@ -1,1 +1,3 @@
-pytest_plugins = 'pytester'
+"""Pytest configuration for pytest-aissert tests."""
+
+pytest_plugins = "pytester"

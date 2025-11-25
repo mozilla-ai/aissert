@@ -37,6 +37,34 @@ def ai_test(threshold=0.5, *args, **kwargs):
     return decorator(ai_test_dec)
 
 
+def llm_judge(threshold=0.5, *args, **kwargs):
+    """Decorator for LLM-as-a-judge test assertions with threshold.
+
+    This decorator is specifically designed for tests that use LLM-based
+    evaluation metrics. It works similarly to ai_test but is semantically
+    intended for tests that leverage LLM judges using the provided prompt
+    generators (evaluate_response, reference_answer, etc.).
+
+    Args:
+        threshold: Minimum metric value required to pass (default 0.5).
+        *args: Additional positional arguments.
+        **kwargs: Must include 'name' for the test identifier.
+
+    Returns:
+        Decorated function that asserts metric meets threshold.
+    """
+    name = kwargs["name"]
+
+    def llm_judge_dec(func, *args, **kwargs):
+        # Add functionality before the original function call.
+        metric = func(*args, **kwargs)
+        # Add functionality after the original function call.
+        current_report[name] = metric
+        assert metric >= threshold
+
+    return decorator(llm_judge_dec)
+
+
 # taken from https://www.evidentlyai.com/llm-guide/llm-as-a-judge#evaluation-by-criteria
 
 

@@ -3,7 +3,7 @@
 0. Export your API keys
 For the default setup, you will need both MistralAI and OpenAI keys set as your env vars.
 
-1. Install uv 
+1. Install uv
    ```bash
    curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
