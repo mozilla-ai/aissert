@@ -4,6 +4,7 @@ import requests
 from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 # A fixed DM instruction for the system prompt
@@ -13,7 +14,7 @@ BASE_DM_INSTRUCTION = (
 )
 
 
-def build_prompt(data):
+def build_prompt(data: dict[str, str]) -> str:
     """Build a Dungeon Master prompt from incoming data.
 
     Args:
@@ -43,7 +44,7 @@ def build_prompt(data):
 
 
 @api_view(["POST"])
-def dungeon_view(request):
+def dungeon_view(request: Request) -> Response:
     """API endpoint for generating Dungeon Master narratives using LLM.
 
     Args:

@@ -6,7 +6,9 @@ import json
 import logging
 import sys
 import time
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 import requests
@@ -21,7 +23,7 @@ except ImportError:
     sys.exit(1)
 
 
-def setup_logging(verbose: bool):
+def setup_logging(verbose: bool) -> logging.Logger:
     """Set up logging configuration with file and console handlers.
 
     Args:
@@ -102,7 +104,7 @@ def load_dataset(input_path: str) -> pd.DataFrame:
     return df
 
 
-def api_call(row: pd.Series, config: dict, api_endpoint: str, max_retries: int = 3):
+def api_call(row: pd.Series, config: dict, api_endpoint: str, max_retries: int = 3) -> dict | None:
     """Make API call with data from a DataFrame row.
 
     Args:
@@ -155,7 +157,7 @@ def api_call(row: pd.Series, config: dict, api_endpoint: str, max_retries: int =
     return None
 
 
-def transform_response(api_response, config: dict):
+def transform_response(api_response: dict | None, config: dict) -> dict | None:
     """Transform API response according to output mapping configuration.
 
     Args:
@@ -183,7 +185,7 @@ def transform_response(api_response, config: dict):
     return transformed_output
 
 
-def predict(df: pd.DataFrame, config: dict, api_endpoint: str):
+def predict(df: pd.DataFrame, config: dict, api_endpoint: str) -> list[dict | None]:
     """Make predictions for all rows in a DataFrame using API calls.
 
     Args:
@@ -203,7 +205,12 @@ def predict(df: pd.DataFrame, config: dict, api_endpoint: str):
     return predictions
 
 
-def create_giskard_model(model_name: str, description: str, feature_names: list, predict_function):
+def create_giskard_model(
+    model_name: str,
+    description: str,
+    feature_names: list[str],
+    predict_function: Callable[[Any], list[dict | None]],  # noqa: ANN401
+) -> Any:  # noqa: ANN401
     """Create a Giskard model wrapper for testing.
 
     Args:
@@ -228,7 +235,7 @@ def create_giskard_model(model_name: str, description: str, feature_names: list,
     )
 
 
-def make_serializable(predictions):
+def make_serializable(predictions: list[Any]) -> list[dict | str]:
     """Convert predictions to JSON-serializable format.
 
     Args:
@@ -252,7 +259,7 @@ def make_serializable(predictions):
 class DummyDataset:
     """Dummy dataset class that mimics Giskard's Dataset interface."""
 
-    def __init__(self, df, target=None):
+    def __init__(self, df: pd.DataFrame, target: str | None = None) -> None:
         """Initialize DummyDataset.
 
         Args:
@@ -264,7 +271,7 @@ class DummyDataset:
         self.column_dtypes = df.dtypes.to_dict()
         self.target = target
 
-    def slice(self, func, row_level=False):
+    def slice(self, func: Callable[[Any], bool], row_level: bool = False) -> "DummyDataset":
         """Apply slicing function to filter dataset rows.
 
         Args:
@@ -286,7 +293,7 @@ class DummyDataset:
             return self
 
 
-def main():
+def main() -> None:
     """Main entry point for aissert-cli.
 
     Parses command-line arguments, makes API predictions, and optionally runs Giskard security tests.
@@ -335,7 +342,7 @@ def main():
 
     dataset = DummyDataset(df)
 
-    def model_predict(input_dataset):
+    def model_predict(input_dataset: Any) -> list[dict | None]:  # noqa: ANN401
         df_inner = input_dataset.df if hasattr(input_dataset, "df") else input_dataset
         return predict(df_inner, config, args.api_endpoint)
 

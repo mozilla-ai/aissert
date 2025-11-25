@@ -8,7 +8,7 @@ from rest_framework.test import APITestCase
 class DungeonAPITestCase(APITestCase):
     """Test case for Dungeon Master API endpoints."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test fixtures."""
         self.url = reverse("dungeon")
         self.valid_payload = {
@@ -20,14 +20,14 @@ class DungeonAPITestCase(APITestCase):
             "user_question": "What lies ahead on the path?",
         }
 
-    def test_dungeon_endpoint_valid(self):
+    def test_dungeon_endpoint_valid(self) -> None:
         """Test dungeon endpoint with valid payload."""
         response = self.client.post(self.url, self.valid_payload, format="json")
         # Check if the response contains a narrative (in our test, we might simulate a response)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("narrative", response.data)
 
-    def test_dungeon_endpoint_missing_field(self):
+    def test_dungeon_endpoint_missing_field(self) -> None:
         """Test dungeon endpoint with missing required field."""
         invalid_payload = self.valid_payload.copy()
         del invalid_payload["user_question"]
