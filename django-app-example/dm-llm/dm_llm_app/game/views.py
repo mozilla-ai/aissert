@@ -1,17 +1,27 @@
-import os
+"""Django views for Dungeon Master LLM-powered narrative generation."""
+
 import requests
-import traceback
 from django.conf import settings
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
+
 # A fixed DM instruction for the system prompt
 BASE_DM_INSTRUCTION = (
     "You are a Dungeon Master. Narrate the story based solely on the following context. "
     "Stay in character, do not add extraneous information, and follow the specified settings.\n\n"
 )
 
+
 def build_prompt(data):
+    """Build a Dungeon Master prompt from incoming data.
+
+    Args:
+        data: Dictionary containing world context, genre, difficulty, etc.
+
+    Returns:
+        Complete prompt string for the LLM.
+    """
     # Extract variables from the incoming data
     world_context = data.get("world_context", "")
     genre = data.get("genre", "")
@@ -31,8 +41,17 @@ def build_prompt(data):
     )
     return BASE_DM_INSTRUCTION + prompt_body
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 def dungeon_view(request):
+    """API endpoint for generating Dungeon Master narratives using LLM.
+
+    Args:
+        request: Django REST framework request object with POST data.
+
+    Returns:
+        Response with generated narrative or error message.
+    """
     # Validate incoming data
     required_fields = ["world_context", "genre", "difficulty", "narrative_tone", "campaign_name", "user_question"]
     for field in required_fields:
@@ -43,34 +62,26 @@ def dungeon_view(request):
     final_prompt = build_prompt(request.data)
 
     # Make the API call to the LLM provider using settings
-    llm_provider = settings.LLM_PROVIDER.lower()
     api_endpoint = settings.LLM_API_ENDPOINT
     api_key = settings.LLM_API_KEY
-    llm_model=settings.LLM_MODEL
+    llm_model = settings.LLM_MODEL
 
     # This is a simplified example assuming an OpenAI-like API; you might need to adapt it.
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     try:
         payload = {
-                "model": f"{llm_model}",
-                "messages": [
-                    {"role": "system", "content": final_prompt}
-                ],
-                "max_tokens": 150
-            }
+            "model": f"{llm_model}",
+            "messages": [{"role": "system", "content": final_prompt}],
+            "max_tokens": 150,
+        }
         print(payload)
         response = requests.post(api_endpoint, json=payload, headers=headers)
         response.raise_for_status()
         llm_result = response.json()
         narrative = llm_result.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
-         
+
     except Exception as e:
         error_details = response.text if response is not None else "No response content"
         return Response({"error": f"{str(e)}: {error_details}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 
     return Response({"narrative": narrative})

@@ -1,3 +1,3 @@
-from django.contrib import admin
+"""Django admin configuration for game app."""
 
 # Register your models here.

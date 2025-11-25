@@ -1,3 +1,3 @@
-from django.db import models
+"""Django models for game app."""
 
 # Create your models here.
