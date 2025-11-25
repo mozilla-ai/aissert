@@ -12,7 +12,8 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pytest>=8.3.0",
-    "decorator==5.2.1"
+    "decorator==5.2.1",
+    "pyyaml>=6.0.2",
 ]
 authors = [
     { name = "Javier Torres", email = "javier@mozilla.ai" },
@@ -42,4 +43,3 @@ classifiers = [
 Repository = "https://github.com/mozilla-ai/aissert"
 [project.entry-points.pytest11]
 aissert = "pytest_aissert.plugin"
-
