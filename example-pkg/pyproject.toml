@@ -8,7 +8,7 @@ dependencies = [
     "aissert",
     # TODO move to optional test dep group
     "pytest-aissert",
-    "litellm==1.63.14",
+    "litellm==1.84.0",
 ]
 
 [project.scripts]
