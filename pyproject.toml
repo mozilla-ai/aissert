@@ -7,9 +7,12 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-    "pre-commit>=4.5.0",
-    "ruff>=0.14.6",
+    "pre-commit>=4.5.1,<5.0.0",
+    "ruff>=0.15.0,<1.0.0"
 ]
+
+[tool.uv]
+exclude-newer = "7 days"
 
 [tool.uv.workspace]
 members = ["aissert", "aissert-cli", "pytest-aissert", "qa_bot", "example-pkg"]
