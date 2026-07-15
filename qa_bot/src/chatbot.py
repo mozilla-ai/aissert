@@ -3,8 +3,7 @@
 from pathlib import Path
 
 import pandas as pd
-from langchain.chains import RetrievalQA
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_classic.chains import RetrievalQA
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings import LlamafileEmbeddings
 from langchain_community.llms.llamafile import Llamafile
@@ -12,6 +11,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
 from langchain_mistralai.chat_models import ChatMistralAI
 from langchain_mistralai.embeddings import MistralAIEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from loguru import logger
 from settings import IPCC_REPORT_URL, OUTPUT_FOLDER, PROMPT_TEMPLATE
 
