@@ -49,4 +49,15 @@ Our typical disclosure timeline for critical issues is up to 30 days from the in
 
 This security policy applies to all components of [aissert](https://github.com/mozilla-ai/aissert).
 
+### Known accepted vulnerabilities
+
+The `qa_bot` example depends on `giskard[llm]` for LLM evaluation, which is its
+core purpose. The latest `giskard` release constrains `bokeh` to `>=3.3.4,<3.5`
+and `numpy` to `<2`, which transitively holds `bokeh` and `transformers` below
+their security-patched releases. These cannot be upgraded without removing
+`giskard`, which would remove the feature the example exists to demonstrate. The
+affected packages are pulled in only by `qa_bot` and are not part of the shipped
+`aissert` library. Revisit if `giskard` publishes a release that relaxes these
+bounds.
+
 Thank you for helping us keep our projects secure for everyone.
